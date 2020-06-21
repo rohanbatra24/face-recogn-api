@@ -2,9 +2,15 @@ const express = require('express');
 
 const bodyParser = require('body-parser');
 
+const cors = require('cors');
+
 const app = express();
 
 app.use(bodyParser.json());
+app.use(cors());
+
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const database = {
 	users : [
@@ -62,6 +68,18 @@ app.put('/image', (req, res) => {
 
 	res.status(404).json('no such user');
 });
+
+// bcrypt.hash(myPlaintextPassword, saltRounds, function(err, hash) {
+// 	console.log('---', hash);
+// });
+
+// Load hash from your password DB.
+// bcrypt.compare(myPlaintextPassword, hash, function(err, result) {
+// 	// result == true
+// });
+// bcrypt.compare(someOtherPlaintextPassword, hash, function(err, result) {
+// 	// result == false
+// });
 
 app.listen(3001, () => {
 	console.log('app is running on port 3001');
