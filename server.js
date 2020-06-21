@@ -14,8 +14,8 @@ const saltRounds = 10;
 
 const database = {
 	users : [
-		{ id: '123', name: 'John', email: 'john@gmail.com', password: 'cookies', entires: 0, joined: new Date() },
-		{ id: '124', name: 'Sally', email: 'sally@gmail.com', password: 'bananas', entires: 0, joined: new Date() }
+		{ id: '123', name: 'John', email: 'john@gmail.com', password: 'cookies', entries: 0, joined: new Date() },
+		{ id: '124', name: 'Sally', email: 'sally@gmail.com', password: 'bananas', entries: 0, joined: new Date() }
 	]
 };
 
@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 
 app.post('/signin', (req, res) => {
 	if (req.body.email === database.users[0].email && req.body.password === database.users[0].password) {
-		res.json('success');
+		res.json(database.users[0]);
 	}
 	else {
 		res.status(400).json('error logging in');
@@ -38,7 +38,7 @@ app.post('/register', (req, res) => {
 		name     : req.body.name,
 		email    : req.body.email,
 		password : req.body.password,
-		entires  : 0,
+		entries  : 0,
 		joined   : new Date()
 	});
 	res.json(database.users[database.users.length - 1]);
@@ -61,8 +61,8 @@ app.put('/image', (req, res) => {
 
 	for (let user of database.users) {
 		if (user.id === id) {
-			user.entires++;
-			return res.json(user.entires);
+			user.entries++;
+			return res.json(user.entries);
 		}
 	}
 
