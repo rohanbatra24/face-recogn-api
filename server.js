@@ -60,26 +60,32 @@ app.post('/register', (req, res) => {
 app.get('/profile/:id', (req, res) => {
 	const { id } = req.params;
 
-	for (let user of database.users) {
-		if (user.id === id) {
-			return res.json(user);
-		}
-	}
-
-	res.status(404).json('no such user');
+	db
+		.select('*')
+		.from('users')
+		.where({
+			id : id
+		})
+		.then((user) => {
+			if (user.length) {
+				res.json(user[0]);
+			}
+			else {
+				res.status(400).json('not found');
+			}
+		})
+		.catch((err) => res.status(400).json('error getting user'));
 });
 
 app.put('/image', (req, res) => {
 	const { id } = req.body;
 
-	for (let user of database.users) {
-		if (user.id === id) {
-			user.entries++;
-			return res.json(user.entries);
-		}
-	}
-
-	res.status(404).json('no such user');
+	db('users')
+		.where('id', '=', id)
+		.increment('entries', 1)
+		.returning('entries')
+		.then((entries) => res.json(entries[0]))
+		.catch((err) => res.status(400).json('unable to get entries'));
 });
 
 // bcrypt.hash(myPlaintextPassword, saltRounds, function(err, hash) {
