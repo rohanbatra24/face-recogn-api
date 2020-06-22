@@ -4,6 +4,20 @@ const bodyParser = require('body-parser');
 
 const cors = require('cors');
 
+const knex = require('knex');
+
+const db = knex({
+	client     : 'pg',
+	connection : {
+		host     : '127.0.0.1',
+		user     : 'rohanbatra',
+		password : '',
+		database : 'face-recog'
+	}
+});
+
+db.select('*').from('users').then((data) => console.log('data', data));
+
 const app = express();
 
 app.use(bodyParser.json());
