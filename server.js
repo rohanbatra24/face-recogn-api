@@ -16,7 +16,12 @@ const db = knex({
 	}
 });
 
-db.select('*').from('users').then((data) => console.log('data', data));
+const database = {
+	users : [
+		{ id: '123', name: 'John', email: 'john@gmail.com', password: 'cookies', entries: 0, joined: new Date() },
+		{ id: '124', name: 'Sally', email: 'sally@gmail.com', password: 'bananas', entries: 0, joined: new Date() }
+	]
+};
 
 const app = express();
 
@@ -40,15 +45,16 @@ app.post('/signin', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
-	database.users.push({
-		id       : '125',
-		name     : req.body.name,
-		email    : req.body.email,
-		password : req.body.password,
-		entries  : 0,
-		joined   : new Date()
-	});
-	res.json(database.users[database.users.length - 1]);
+	const { email, name, password } = req.body;
+	db('users')
+		.returning('*')
+		.insert({
+			email  : email,
+			name   : name,
+			joined : new Date()
+		})
+		.then((response) => res.json(response))
+		.catch((err) => res.status(400).json('unable to register'));
 });
 
 app.get('/profile/:id', (req, res) => {
